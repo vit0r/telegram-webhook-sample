@@ -74,13 +74,12 @@ def get_status():
     led_status = query_db()
     if led_status:
         return jsonify({'led_status': led_status}), 200
-    else:
-        return jsonify({'led_status': 'Not content found'}), 204
+    return jsonify({'led_status': 'Not content found'}), 204
 
 
 @app.route('/', methods=['POST', 'GET'])
 def telegram():
     if request.method == 'POST':
-        post_status(request.get_json())
+        return post_status(request.get_json())
     if request.method == 'GET':
-        get_status()
+        return get_status()
