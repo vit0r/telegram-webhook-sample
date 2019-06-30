@@ -54,18 +54,17 @@ def update_db(status_text, user_id):
 
 
 def post_status(request_json):
-    print(f'request {request_json}')
     fail = jsonify({'ok': False}), 200
     if not request_json:
         return fail
-    message = request_json.get('message')
+    message = request_json.get('message', request_json.get('edited_message'))
     cmd = message.get('text').replace('/', '')
     if cmd not in ['on', 'off']:
         return fail
     username = message.get('from').get('username')
     chat_id = message.get('chat').get('id')
     answer = f"{username}: LED is now {cmd}"
-    update_db(cmd, chat_id)
+    update_db(cmd, username)
     post_json = {'chat_id': chat_id, 'text': answer}
     resp = requests.post(SEND_MESSAGE_URL,  json=post_json)
     return jsonify(resp.json()), resp.status_code
